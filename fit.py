@@ -13,9 +13,9 @@ def sumsquared_error(sequence, segment):
 def regression(sequence, seq_range):
     """Return (x0,y0,x1,y1) of a line fit to a segment of a sequence using linear regression"""
     p, error = leastsquareslinefit(sequence,seq_range)
-    y0 = p[0]*seq_range[0] + p[1]
-    y1 = p[0]*seq_range[1] + p[1]
-    return (seq_range[0],y0,seq_range[1],y1)
+    y0 = p[0]*sequence[seq_range[0]][0] + p[1]
+    y1 = p[0]*sequence[seq_range[1]][0] + p[1]
+    return (seq_range[0],(sequence[seq_range[0]][0],y0),seq_range[1],(sequence[seq_range[1]][0],y1))
     
 def interpolate(sequence, seq_range):
     """Return (x0,y0,x1,y1) of a line fit to a segment using a simple interpolation"""
