@@ -13,21 +13,26 @@ def draw_plot(data,plot_title):
     xlim((data[:,0][0],data[:,0][-1]))
 
 def draw_segments(segments,ticks):
-    segments=[(x1,y1,x21,y21) for x,(x1,y1),x2,(x21,y21) in segments]
+    segments=[(x1,y1,x21,y21) for x,(x1,y1),x2,(x21,y21),err in segments]
     ax = gca()
     ax.set_xticklabels(ticks, rotation=20)
     for segment in segments:
         line = Line2D((segment[0],segment[2]),(segment[1],segment[3]))
         ax.add_line(line)
 
-def wrapOrchestration(title, labels, data, segment, create_segment, compute_error, max_error):
+def wrapOrchestration(title, labels, data, segment_algo, create_segment, compute_error, max_error):
     figure()
-    segments = segment(data, create_segment, compute_error, max_error)
+    segments = segment_algo(data, create_segment, compute_error, max_error)
     draw_plot(data,title)
     draw_segments(segments,labels)
     print(len(segments))
     print(len(data)/len(segments))
     name=title.split()[0][:3]+title.split()[-1][:3]
+    with open(f"./output/{name}_{labels[0]}_{labels[-1]}_{max_error}.txt","w") as file:
+        for xbeg, (x0,y0), xend, (x1,y1), err in segments:
+            file.write(f"{labels[xbeg]}\t{x0}\t{y0}\n")
+            file.write(f"{labels[xend]}\t{x1}\t{y1}\t{err}\n")
+
 
 MIN=int(sys.argv[1]) if len(sys.argv)>1 else 0
 MAX=int(sys.argv[2]) if len(sys.argv)>2 else MIN+30
@@ -37,7 +42,7 @@ with open("example_data/bitcoin_2010-8-16_2021-9-8.txt") as f:
 
 data = [tuple(x.split("\t")[1:3]) for x in file_lines[MIN:MAX]]
 labels = [x.split("\t")[0] for x in file_lines[MIN:MAX]]
-data = array([(int(x),float(y.strip())/pow(10,14)) for x,y in data])
+data = array([(float(x),float(y.strip())/pow(10,14)) for x,y in data])
 max_error = ERROR
 
 #sliding window with regression 
