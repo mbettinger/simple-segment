@@ -1,5 +1,5 @@
 from wrappers import leastsquareslinefit
-
+import math
 # compute_error functions
 
 def sumsquared_error(sequence, segment):
@@ -9,7 +9,7 @@ def sumsquared_error(sequence, segment):
     progress=[(x,(x-xa0)/(xa1-xa0)) for x,y in datapoints]
     approxPoints=[(x,(1-prog)*ya0+prog*ya1) for x,prog in progress]
     assert(len(datapoints)==len(approxPoints))
-    error=sum([(ya-datapoints[index][1])**2 for index,(xa,ya) in enumerate(approxPoints)])
+    error=math.sqrt(sum([(ya-datapoints[index][1])**2 for index,(xa,ya) in enumerate(approxPoints)]))
     #p, error = leastsquareslinefit(sequence,(x0,x1))
     return error
     

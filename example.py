@@ -36,13 +36,13 @@ def wrapOrchestration(title, labels, data, segment_algo, create_segment, compute
 
 MIN=int(sys.argv[1]) if len(sys.argv)>1 else 0
 MAX=int(sys.argv[2]) if len(sys.argv)>2 else MIN+30
-ERROR=float(sys.argv[3]) if len(sys.argv)>3 else 0.1
+ERROR=float(sys.argv[3]) if len(sys.argv)>3 else 1
 with open("example_data/bitcoin_2010-8-16_2021-9-8.txt") as f:
     file_lines = f.readlines()
 
 data = [tuple(x.split("\t")[1:3]) for x in file_lines[MIN:MAX]]
 labels = [x.split("\t")[0] for x in file_lines[MIN:MAX]]
-data = array([(float(x),float(y.strip())/pow(10,14)) for x,y in data])
+data = array([(float(x),float(y.strip())) for x,y in data])
 max_error = ERROR
 
 #sliding window with regression 
@@ -50,14 +50,14 @@ wrapOrchestration("Sliding window with regression",labels,data,segment.slidingwi
 #bottom-up with regression
 wrapOrchestration("Bottom-up with regression",labels,data,segment.bottomupsegment,fit.regression, fit.sumsquared_error, max_error)
 #top-down with regression
-wrapOrchestration("Top-down with regression",labels,data,segment.topdownsegment,fit.regression, fit.sumsquared_error, max_error)
+#wrapOrchestration("Top-down with regression",labels,data,segment.topdownsegment,fit.regression, fit.sumsquared_error, max_error)
 
 #sliding window with simple interpolation
 wrapOrchestration("Sliding window with simple interpolation",labels,data,segment.slidingwindowsegment, fit.interpolate, fit.sumsquared_error, max_error)
 #bottom-up with  simple interpolation
 wrapOrchestration("Bottom-up with simple interpolation",labels,data,segment.bottomupsegment,fit.interpolate, fit.sumsquared_error, max_error)
 #top-down with  simple interpolation
-wrapOrchestration("Top-down with simple interpolation",labels,data,segment.topdownsegment,fit.interpolate, fit.sumsquared_error, max_error)
+#wrapOrchestration("Top-down with simple interpolation",labels,data,segment.topdownsegment,fit.interpolate, fit.sumsquared_error, max_error)
 
 show()
 
